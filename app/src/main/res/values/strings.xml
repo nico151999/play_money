@@ -18,11 +18,11 @@
     <string name="cannot_read">Eingehender Datenstrom von %s kann nicht gelesen werden</string>
     <string name="cannot_write">Informationen können nicht an %s versendet werden</string>
     <string name="connection_interrupted">Die Verbindung zu %s wurde unterbrochen</string>
-    <string name="five">5</string>
-    <string name="ten">10</string>
-    <string name="fifteen">15</string>
-    <string name="thirty">30</string>
-    <string name="fifty">50</string>
+    <string name="five" translatable="false">5</string>
+    <string name="ten" translatable="false">10</string>
+    <string name="fifteen" translatable="false">15</string>
+    <string name="thirty" translatable="false">30</string>
+    <string name="fifty" translatable="false">50</string>
     <string name="unknown_message_format">Eine Nachricht von unbekanntem Format wurde empfangen</string>
     <string name="cannot_read_from_server">Es können keine Daten vom Gastgeber gelesen werden</string>
     <string name="cannot_write_to_server">Es können keine Informationen an den Gastgeber gesendet werden</string>

@@ -90,7 +90,7 @@ public class GameHostActivity extends GameActivity {
                 runOnUiThread(() -> Toast.makeText(GameHostActivity.this, getString(R.string.connection_interrupted, client.getRemoteDevice().getName()), Toast.LENGTH_LONG).show());
                 BluetoothDevice device = client.getRemoteDevice();
                 mGameHostService.close(device);
-                mClientAdapter.remove(device);
+                runOnUiThread(() -> mClientAdapter.remove(device));
                 mGameHostService.runOnAll(bluetoothDevice -> mGameHostService.write(bluetoothDevice, RemoveMessage.create(device.getAddress()).toString()));
             }
         }, clientSockets);

@@ -127,20 +127,22 @@ public class GameHostActivity extends GameActivity {
     }
 
     private void receiveSendMessage(BluetoothDevice sendingDevice, SendMessage sendMessage) {
-        BluetoothDevice receivingDevice = getBluetoothAdapter().getRemoteDevice(sendMessage.getTargetAddress());
-        Double newValueReceiver;
-        if (receivingDevice.getAddress().equals(getBluetoothAddress())) {
-            newValueReceiver = Double.parseDouble(mAccountItem.getTitle().toString()) + sendMessage.getAmount();
-            runOnUiThread(() -> mAccountItem.setTitle(newValueReceiver.toString()));
-        } else {
-            newValueReceiver = mClientAdapter.update(receivingDevice, sendMessage.getAmount());
-        }
-        Double newValueSender = mClientAdapter.update(sendingDevice, -sendMessage.getAmount());
-        String updateReceiverMessage = UpdateMessage.create(newValueReceiver, receivingDevice.getAddress()).toString();
-        String updateSenderMessage = UpdateMessage.create(newValueSender, sendingDevice.getAddress()).toString();
-        mGameHostService.runOnAll(device -> {
-            mGameHostService.write(device, updateReceiverMessage);
-            mGameHostService.write(device, updateSenderMessage);
+        runOnUiThread(() -> {
+            BluetoothDevice receivingDevice = getBluetoothAdapter().getRemoteDevice(sendMessage.getTargetAddress());
+            Double newValueReceiver;
+            if (receivingDevice.getAddress().equals(getBluetoothAddress())) {
+                newValueReceiver = Double.parseDouble(mAccountItem.getTitle().toString()) + sendMessage.getAmount();
+                mAccountItem.setTitle(newValueReceiver.toString());
+            } else {
+                newValueReceiver = mClientAdapter.update(receivingDevice, sendMessage.getAmount());
+            }
+            Double newValueSender = mClientAdapter.update(sendingDevice, -sendMessage.getAmount());
+            String updateReceiverMessage = UpdateMessage.create(newValueReceiver, receivingDevice.getAddress()).toString();
+            String updateSenderMessage = UpdateMessage.create(newValueSender, sendingDevice.getAddress()).toString();
+            mGameHostService.runOnAll(device -> {
+                mGameHostService.write(device, updateReceiverMessage);
+                mGameHostService.write(device, updateSenderMessage);
+            });
         });
     }
 

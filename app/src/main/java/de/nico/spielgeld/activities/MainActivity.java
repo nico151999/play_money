@@ -43,9 +43,7 @@ public abstract class MainActivity extends AppCompatActivity {
         registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
         registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 
-        List<String> permissions = getUnGrantedPermissions(new String[]{
-                Manifest.permission.ACCESS_COARSE_LOCATION
-        });
+        List<String> permissions = getUnGrantedPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION});
         if (permissions.size() > 0) {
             ActivityCompat.requestPermissions(
                     this,

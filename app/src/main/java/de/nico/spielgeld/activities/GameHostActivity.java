@@ -147,9 +147,7 @@ public class GameHostActivity extends GameActivity {
     private void receiveRequestMessage(BluetoothDevice requestingDevice) {
         Map<String, Double> standings = new HashMap<>();
         for (Map.Entry<BluetoothDevice, Double> account : mClientAdapter.getAccounts().entrySet()) {
-            if (account.getKey() != requestingDevice) {
-                standings.put(account.getKey().getAddress(), account.getValue());
-            }
+            standings.put(account.getKey().getAddress(), account.getValue());
         }
         standings.put(getBluetoothAddress(), Double.parseDouble(mAccountItem.getTitle().toString()));
         mGameHostService.write(requestingDevice, StandingMessage.create(standings, requestingDevice.getAddress()).toString());

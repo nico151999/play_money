@@ -48,7 +48,7 @@ public class GameClientActivity extends GameActivity {
         mGameClientService = new GameClientService(new GameClientService.GameClientListener() {
             @Override
             public void onConnectionInterrupted() {
-                runOnUiThread(() -> Toast.makeText(GameClientActivity.this, R.string.server_ended, Toast.LENGTH_LONG).show());
+                System.out.println("The host finished the game");
                 finish();
             }
 

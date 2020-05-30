@@ -24,7 +24,6 @@
     <string name="thirty">30</string>
     <string name="fifty">50</string>
     <string name="unknown_message_format">Eine Nachricht von unbekanntem Format wurde empfangen</string>
-    <string name="server_ended">Der Gastgeber hat das Spiel beendet</string>
     <string name="cannot_read_from_server">Es können keine Daten vom Gastgeber gelesen werden</string>
     <string name="cannot_write_to_server">Es können keine Informationen an den Gastgeber gesendet werden</string>
     <string name="cannot_initialize_game">Das Spiel kann nicht gestartet werden</string>

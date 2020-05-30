@@ -18,8 +18,6 @@ import de.nico.spielgeld.views.JointBluetoothDeviceRecyclerAdapter;
 
 public class CreateGameActivity extends MainActivity {
 
-    private MaterialButton mStartGameView;
-    private RecyclerView mRecyclerView;
     private CreateGameService mCreateGameService;
     private JointBluetoothDeviceRecyclerAdapter mJointRecyclerAdapter;
 
@@ -28,14 +26,14 @@ public class CreateGameActivity extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
 
-        mStartGameView = findViewById(R.id.start_game);
-        mRecyclerView = findViewById(R.id.joint_devices);
+        MaterialButton startGameView = findViewById(R.id.start_game);
+        RecyclerView recyclerView = findViewById(R.id.joint_devices);
 
         mJointRecyclerAdapter = new JointBluetoothDeviceRecyclerAdapter(this);
-        mRecyclerView.setAdapter(mJointRecyclerAdapter);
+        recyclerView.setAdapter(mJointRecyclerAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), layoutManager.getOrientation()));
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), layoutManager.getOrientation()));
 
         mCreateGameService = new CreateGameService(getBluetoothAdapter(), new CreateGameService.CreateGameListener() {
             @Override
@@ -56,7 +54,7 @@ public class CreateGameActivity extends MainActivity {
         });
         mCreateGameService.start();
 
-        mStartGameView.setOnClickListener((view) -> {
+        startGameView.setOnClickListener((view) -> {
             if (mCreateGameService != null) {
                 mCreateGameService.closeServer();
                 InterActivitySockets.clients = mJointRecyclerAdapter.getClients();

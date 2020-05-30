@@ -56,17 +56,14 @@ public class GameClientActivity extends GameActivity {
                 Object messageObject;
                 if ((messageObject = StandingMessage.parse(message)) != null) {
                     receiveStandingMessage((StandingMessage) messageObject);
-                }
-                if (mBluetoothAddress == null) {
+                } else if (mBluetoothAddress == null) {
                     System.out.println("Waiting for a StandingMessage which will set the address, before other messages can be processed");
+                } else if ((messageObject = RemoveMessage.parse(message)) != null) {
+                    receiveRemoveMessage((RemoveMessage) messageObject);
+                } else if ((messageObject = UpdateMessage.parse(message)) != null) {
+                    receiveUpdateMessage((UpdateMessage) messageObject);
                 } else {
-                    if ((messageObject = RemoveMessage.parse(message)) != null) {
-                        receiveRemoveMessage((RemoveMessage) messageObject);
-                    } else if ((messageObject = UpdateMessage.parse(message)) != null) {
-                        receiveUpdateMessage((UpdateMessage) messageObject);
-                    } else {
-                        runOnUiThread(() -> Toast.makeText(GameClientActivity.this, R.string.unknown_message_format, Toast.LENGTH_LONG).show());
-                    }
+                    runOnUiThread(() -> Toast.makeText(GameClientActivity.this, R.string.unknown_message_format, Toast.LENGTH_LONG).show());
                 }
             }
 

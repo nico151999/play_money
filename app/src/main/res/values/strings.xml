@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Spielgeld</string>
+    <string name="join_game">Spiel beitreten</string>
+    <string name="create_game">Spiel erstellen</string>
+    <string name="unknown_device">Unbekanntes Gerät</string>
+    <string name="permission_denied">Du musst die angefragten Berechtigungen gewähren, damit die App funktionieren kann</string>
+    <string name="bluetooth_not_available">Dieses Gerät hat kein Bluetooth</string>
+    <string name="bluetooth_disabled">Bluetooth wurde deaktiviert, muss aber aktiviert sein, damit die App funktioniert</string>
+    <string name="bt_not_enabled_leaving">Bluetooth wurde nicht aktiviert, weshalb die App nicht funktionieren kann</string>
+    <string name="start_game">Spiel starten</string>
+    <string name="cannot_host">Spiel kann nicht ausgerichtet werden</string>
+    <string name="cannot_connect_incoming">Verbindung zu einem Gerät konnte nicht aktiviert werden</string>
+    <string name="device_cannot_start">Das Gerät %s kann das Spiel nicht beginnen</string>
+    <string name="failed_connection">Der Verbindungsaufbau schlug fehl</string>
+    <string name="error_occurred">Ein Fehler ist aufgetreten</string>
+    <string name="wait_for_host">Du bist dem Spiel beigetreten. Bitte warte nun bis der Host das Spiel startet!</string>
+    <string name="host_requires_discoverability">Der Spielhost muss während des Erstellens des Spiels sichtbar sein</string>
+    <string name="cannot_read">Eingehender Datenstrom von %s kann nicht gelesen werden</string>
+    <string name="cannot_write">Informationen können nicht an %s versendet werden</string>
+    <string name="connection_interrupted">Die Verbindung zu %s wurde unterbrochen</string>
+    <string name="five">5</string>
+    <string name="ten">10</string>
+    <string name="fifteen">15</string>
+    <string name="thirty">30</string>
+    <string name="fifty">50</string>
+    <string name="unknown_message_format">Eine Nachricht von unbekanntem Format wurde empfangen</string>
+    <string name="server_ended">Der Gastgeber hat das Spiel beendet</string>
+    <string name="cannot_read_from_server">Es können keine Daten vom Gastgeber gelesen werden</string>
+    <string name="cannot_write_to_server">Es können keine Informationen an den Gastgeber gesendet werden</string>
+</resources>

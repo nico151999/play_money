@@ -12,16 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.StartActivity">
+        <activity android:name=".activities.StartActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.CreateGameActivity" />
-        <activity android:name=".activities.JoinGameActivity" />
-        <activity android:name=".activities.GameHostActivity" />
-        <activity android:name=".activities.GameClientActivity" />
+        <activity android:name=".activities.CreateGameActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".activities.JoinGameActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".activities.GameHostActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".activities.GameClientActivity"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

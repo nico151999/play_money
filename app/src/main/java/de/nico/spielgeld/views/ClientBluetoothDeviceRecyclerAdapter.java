@@ -1,6 +1,7 @@
 package de.nico.spielgeld.views;
 
 import android.bluetooth.BluetoothDevice;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import de.nico.spielgeld.Constants;
 import de.nico.spielgeld.R;
@@ -20,10 +22,10 @@ import de.nico.spielgeld.activities.GameActivity;
 
 public class ClientBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<ClientBluetoothDeviceRecyclerAdapter.ViewHolder> {
 
-    private LinkedHashMap<BluetoothDevice, Double> mAccounts;
+    private LinkedHashMap<BluetoothDevice, Pair<String, Double>> mAccounts;
     private GameActivity mContext;
 
-    public ClientBluetoothDeviceRecyclerAdapter(GameActivity context, LinkedHashMap<BluetoothDevice, Double> accounts) {
+    public ClientBluetoothDeviceRecyclerAdapter(GameActivity context, LinkedHashMap<BluetoothDevice, Pair<String, Double>> accounts) {
         mContext = context;
         mAccounts = accounts;
         notifyDataSetChanged();
@@ -39,9 +41,10 @@ public class ClientBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<C
 
     @Override
     public void onBindViewHolder(@NonNull ClientBluetoothDeviceRecyclerAdapter.ViewHolder holder, int position) {
-        BluetoothDevice device = mAccounts.keySet().toArray(new BluetoothDevice[0])[position];
-        String text = device.getName();
-        Double account = mAccounts.get(device);
+        Map.Entry<BluetoothDevice, Pair<String, Double>> set = (Map.Entry<BluetoothDevice, Pair<String, Double>>) mAccounts.entrySet().toArray()[position];
+        BluetoothDevice device = set.getKey();
+        String text = set.getValue().first;
+        Double account = set.getValue().second;
         LinearLayout rowOne = (LinearLayout) holder.mmDeviceView.getChildAt(0);
         LinearLayout rowTwo = (LinearLayout) holder.mmDeviceView.getChildAt(1);
         ((MaterialTextView) rowOne.getChildAt(0)).setText(text == null ? mContext.getString(R.string.unknown_device) : text);
@@ -64,18 +67,19 @@ public class ClientBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<C
     }
 
     public Double update(BluetoothDevice device, Double delta) {
-        Double newValue = mAccounts.get(device) + delta;
-        mAccounts.put(device, newValue);
+        Pair<String, Double> oldEntry = mAccounts.get(device);
+        Double newValue = oldEntry.second + delta;
+        mAccounts.put(device, new Pair<>(oldEntry.first, newValue));
         notifyItemChanged(new ArrayList<>(mAccounts.keySet()).indexOf(device));
         return newValue;
     }
 
-    public LinkedHashMap<BluetoothDevice, Double> getAccounts() {
+    public LinkedHashMap<BluetoothDevice, Pair<String, Double>> getAccounts() {
         return mAccounts;
     }
 
     public void updateTotal(BluetoothDevice device, Double account) {
-        mAccounts.put(device, account);
+        mAccounts.replace(device, new Pair<>(mAccounts.get(device).first, account));
         notifyItemChanged(new ArrayList<>(mAccounts.keySet()).indexOf(device));
     }
 

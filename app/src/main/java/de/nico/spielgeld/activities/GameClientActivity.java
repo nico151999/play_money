@@ -3,6 +3,7 @@ package de.nico.spielgeld.activities;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -114,12 +115,12 @@ public class GameClientActivity extends GameActivity {
 
     private void receiveStandingMessage(StandingMessage standingMessage) {
         mBluetoothAddress = standingMessage.getBluetoothAddress();
-        LinkedHashMap<BluetoothDevice, Double> accounts = new LinkedHashMap<>();
-        for (Map.Entry<String, Double> account : standingMessage.getAccounts().entrySet()) {
+        LinkedHashMap<BluetoothDevice, Pair<String, Double>> accounts = new LinkedHashMap<>();
+        for (Map.Entry<String, Pair<String, Double>> account : standingMessage.getAccounts().entrySet()) {
             if (account.getKey().equals(mBluetoothAddress)) {
-                runOnUiThread(() -> mAccountItem.setTitle(account.getValue().toString()));
+                runOnUiThread(() -> mAccountItem.setTitle(account.getValue().second.toString()));
             } else {
-                accounts.put(getBluetoothAdapter().getRemoteDevice(account.getKey()), account.getValue());
+                accounts.put(getBluetoothAdapter().getRemoteDevice(account.getKey()), new Pair<>(account.getValue().first, account.getValue().second));
             }
         }
         runOnUiThread(() -> {

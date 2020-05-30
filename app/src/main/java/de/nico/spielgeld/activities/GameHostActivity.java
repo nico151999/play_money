@@ -3,6 +3,7 @@ package de.nico.spielgeld.activities;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -49,9 +50,9 @@ public class GameHostActivity extends GameActivity {
         } else {
             InterActivitySockets.clients = null;
         }
-        LinkedHashMap<BluetoothDevice, Double> accounts = new LinkedHashMap<>();
+        LinkedHashMap<BluetoothDevice, Pair<String, Double>> accounts = new LinkedHashMap<>();
         for (BluetoothSocket socket : clientSockets) {
-            accounts.put(socket.getRemoteDevice(), Constants.INITIAL_ACCOUNT);
+            accounts.put(socket.getRemoteDevice(), new Pair<>(socket.getRemoteDevice().getName(), Constants.INITIAL_ACCOUNT));
         }
 
         mClientAdapter = new ClientBluetoothDeviceRecyclerAdapter(this, accounts);
@@ -152,11 +153,11 @@ public class GameHostActivity extends GameActivity {
     }
 
     private void receiveRequestMessage(BluetoothDevice requestingDevice) {
-        Map<String, Double> standings = new HashMap<>();
-        for (Map.Entry<BluetoothDevice, Double> account : mClientAdapter.getAccounts().entrySet()) {
+        Map<String, Pair<String, Double>> standings = new HashMap<>();
+        for (Map.Entry<BluetoothDevice, Pair<String, Double>> account : mClientAdapter.getAccounts().entrySet()) {
             standings.put(account.getKey().getAddress(), account.getValue());
         }
-        standings.put(getBluetoothAddress(), Double.parseDouble(mAccountItem.getTitle().toString()));
+        standings.put(getBluetoothAddress(), new Pair<>(getBluetoothAdapter().getName(), Double.parseDouble(mAccountItem.getTitle().toString())));
         mGameHostService.write(requestingDevice, StandingMessage.create(standings, requestingDevice.getAddress()).toString());
     }
 }

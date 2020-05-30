@@ -28,6 +28,7 @@ public class GameClientActivity extends GameActivity {
 
     private ClientBluetoothDeviceRecyclerAdapter mOpponentsAdapter;
     private GameClientService mGameClientService;
+    private String mBluetoothAddress; // needs to be set by server, as own address cannot be determined
     private MenuItem mAccountItem;
 
     @Override
@@ -55,12 +56,17 @@ public class GameClientActivity extends GameActivity {
                 Object messageObject;
                 if ((messageObject = StandingMessage.parse(message)) != null) {
                     receiveStandingMessage((StandingMessage) messageObject);
-                } else if ((messageObject = RemoveMessage.parse(message)) != null) {
-                    receiveRemoveMessage((RemoveMessage) messageObject);
-                } else if ((messageObject = UpdateMessage.parse(message)) != null) {
-                    receiveUpdateMessage((UpdateMessage) messageObject);
+                }
+                if (mBluetoothAddress == null) {
+                    System.out.println("Waiting for a StandingMessage which will set the address, before other messages can be processed");
                 } else {
-                    runOnUiThread(() -> Toast.makeText(GameClientActivity.this, R.string.unknown_message_format, Toast.LENGTH_LONG).show());
+                    if ((messageObject = RemoveMessage.parse(message)) != null) {
+                        receiveRemoveMessage((RemoveMessage) messageObject);
+                    } else if ((messageObject = UpdateMessage.parse(message)) != null) {
+                        receiveUpdateMessage((UpdateMessage) messageObject);
+                    } else {
+                        runOnUiThread(() -> Toast.makeText(GameClientActivity.this, R.string.unknown_message_format, Toast.LENGTH_LONG).show());
+                    }
                 }
             }
 
@@ -97,7 +103,7 @@ public class GameClientActivity extends GameActivity {
 
     private void receiveUpdateMessage(UpdateMessage updateMessage) {
         runOnUiThread(() -> {
-            if (updateMessage.getDeviceAddress().equals(getBluetoothAdapter().getAddress())) {
+            if (updateMessage.getDeviceAddress().equals(mBluetoothAddress)) {
                 mAccountItem.setTitle(updateMessage.getAccount().toString());
             } else {
                 mOpponentsAdapter.updateTotal(getBluetoothAdapter().getRemoteDevice(updateMessage.getDeviceAddress()), updateMessage.getAccount());
@@ -110,9 +116,10 @@ public class GameClientActivity extends GameActivity {
     }
 
     private void receiveStandingMessage(StandingMessage standingMessage) {
+        mBluetoothAddress = standingMessage.getBluetoothAddress();
         LinkedHashMap<BluetoothDevice, Double> accounts = new LinkedHashMap<>();
         for (Map.Entry<String, Double> account : standingMessage.getAccounts().entrySet()) {
-            if (account.getKey().equals(getBluetoothAdapter().getAddress())) {
+            if (account.getKey().equals(mBluetoothAddress)) {
                 runOnUiThread(() -> mAccountItem.setTitle(account.getValue().toString()));
             } else {
                 accounts.put(getBluetoothAdapter().getRemoteDevice(account.getKey()), account.getValue());

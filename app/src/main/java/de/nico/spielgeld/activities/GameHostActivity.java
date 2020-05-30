@@ -129,7 +129,7 @@ public class GameHostActivity extends GameActivity {
     private void receiveSendMessage(BluetoothDevice sendingDevice, SendMessage sendMessage) {
         BluetoothDevice receivingDevice = getBluetoothAdapter().getRemoteDevice(sendMessage.getTargetAddress());
         Double newValueReceiver;
-        if (receivingDevice.getAddress().equals(getBluetoothAdapter().getAddress())) {
+        if (receivingDevice.getAddress().equals(getBluetoothAddress())) {
             newValueReceiver = Double.parseDouble(mAccountItem.getTitle().toString()) + sendMessage.getAmount();
             mAccountItem.setTitle(newValueReceiver.toString());
         } else {
@@ -151,7 +151,7 @@ public class GameHostActivity extends GameActivity {
                 standings.put(account.getKey().getAddress(), account.getValue());
             }
         }
-        standings.put(getBluetoothAdapter().getAddress(), Double.parseDouble(mAccountItem.getTitle().toString()));
-        mGameHostService.write(requestingDevice, StandingMessage.create(standings).toString());
+        standings.put(getBluetoothAddress(), Double.parseDouble(mAccountItem.getTitle().toString()));
+        mGameHostService.write(requestingDevice, StandingMessage.create(standings, requestingDevice.getAddress()).toString());
     }
 }

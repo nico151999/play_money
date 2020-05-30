@@ -82,10 +82,6 @@ public class GameClientActivity extends GameActivity {
                 finish();
             }
         }, host);
-        if (!mGameClientService.write(RequestMessage.create().toString())) {
-            Toast.makeText(this, R.string.cannot_initialize_game, Toast.LENGTH_LONG).show();
-            finish();
-        }
     }
 
     @Override

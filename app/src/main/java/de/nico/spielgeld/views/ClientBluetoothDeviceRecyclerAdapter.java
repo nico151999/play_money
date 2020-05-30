@@ -13,7 +13,6 @@ import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import de.nico.spielgeld.Constants;
 import de.nico.spielgeld.R;
@@ -47,11 +46,11 @@ public class ClientBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<C
         LinearLayout rowTwo = (LinearLayout) holder.mmDeviceView.getChildAt(1);
         ((MaterialTextView) rowOne.getChildAt(0)).setText(text == null ? mContext.getString(R.string.unknown_device) : text);
         ((MaterialTextView) rowOne.getChildAt(1)).setText(account == null ? Constants.INITIAL_ACCOUNT.toString() : account.toString());
-        rowTwo.getChildAt(0).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialTextView) view).getText().toString())));
-        rowTwo.getChildAt(1).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialTextView) view).getText().toString())));
-        rowTwo.getChildAt(2).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialTextView) view).getText().toString())));
-        rowTwo.getChildAt(3).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialTextView) view).getText().toString())));
-        rowTwo.getChildAt(4).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialTextView) view).getText().toString())));
+        rowTwo.getChildAt(0).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
+        rowTwo.getChildAt(1).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
+        rowTwo.getChildAt(2).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
+        rowTwo.getChildAt(3).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
+        rowTwo.getChildAt(4).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
     }
 
     @Override

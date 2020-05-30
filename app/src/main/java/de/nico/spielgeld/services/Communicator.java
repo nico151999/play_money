@@ -57,6 +57,7 @@ class Communicator extends Thread {
                         transferredBytes[i] = bytes.get(i);
                     }
                     mCommunicatorListener.onMessageReceived(mmHost, new String(transferredBytes));
+                    bytes.clear();
                 } else {
                     bytes.add(buffer);
                 }

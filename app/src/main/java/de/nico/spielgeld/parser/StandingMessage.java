@@ -32,7 +32,7 @@ public class StandingMessage {
     }
 
     public static StandingMessage parse(String message) {
-        if (message.matches(IDENTIFIER + " (.{2}:){5}.{2}(\\n(.{2}:){5}.{2} \\d+\\.\\d+)+")) {
+        if (message.matches(IDENTIFIER + " (.{2}:){5}.{2}(\\n(.{2}:){5}.{2} -?\\d+\\.\\d+)+")) {
             return new StandingMessage(message);
         } else {
             return null;

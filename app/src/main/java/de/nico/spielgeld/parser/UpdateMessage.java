@@ -24,7 +24,7 @@ public class UpdateMessage {
     }
 
     public static UpdateMessage parse(String message) {
-        if (message.matches(IDENTIFIER + " (.{2}:){5}.{2} \\d+\\.\\d+")) {
+        if (message.matches(IDENTIFIER + " (.{2}:){5}.{2} -?\\d+\\.\\d+")) {
             return new UpdateMessage(message);
         } else {
             return null;

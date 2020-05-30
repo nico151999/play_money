@@ -89,6 +89,12 @@ public class GameClientActivity extends GameActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mGameClientService.close();
+    }
+
     private void receiveUpdateMessage(UpdateMessage updateMessage) {
         runOnUiThread(() -> {
             if (updateMessage.getDeviceAddress().equals(getBluetoothAdapter().getAddress())) {

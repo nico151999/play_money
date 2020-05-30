@@ -92,6 +92,10 @@ public class GameClientActivity extends GameActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_account, menu);
         mAccountItem = menu.findItem(R.id.account);
+        if (!mGameClientService.write(RequestMessage.create().toString())) {
+            Toast.makeText(this, R.string.cannot_initialize_game, Toast.LENGTH_LONG).show();
+            finish();
+        }
         return super.onCreateOptionsMenu(menu);
     }
 

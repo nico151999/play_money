@@ -95,12 +95,6 @@ public class GameHostActivity extends GameActivity {
                 mGameHostService.runOnAll(bluetoothDevice -> mGameHostService.write(bluetoothDevice, RemoveMessage.create(device.getAddress()).toString()));
             }
         }, clientSockets);
-
-        mGameHostService.runOnAll(device -> {
-            if (!mGameHostService.write(device, StartMessage.create().toString())) {
-                Toast.makeText(this, getString(R.string.device_cannot_start, device.getName()), Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     @Override
@@ -115,6 +109,11 @@ public class GameHostActivity extends GameActivity {
         mAccountItem = menu.findItem(R.id.account);
         if (mAccountItem.getTitle().length() == 0) {
             mAccountItem.setTitle(Constants.INITIAL_ACCOUNT.toString());
+            mGameHostService.runOnAll(device -> {
+                if (!mGameHostService.write(device, StartMessage.create().toString())) {
+                    Toast.makeText(this, getString(R.string.device_cannot_start, device.getName()), Toast.LENGTH_LONG).show();
+                }
+            });
         }
         return super.onCreateOptionsMenu(menu);
     }

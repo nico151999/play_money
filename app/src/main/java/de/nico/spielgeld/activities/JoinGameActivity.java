@@ -55,14 +55,16 @@ public class JoinGameActivity extends MainActivity {
                 runOnUiThread(() -> {
                     mSwipeRefreshLayout.setEnabled(false);
                     mJoinRecyclerAdapter.clear();
-                    mDeviceListView.setVisibility(View.GONE);
                     mWaitInformationView.setVisibility(View.VISIBLE);
                 });
             }
 
             @Override
             public void onFailedToEstablishConnection() {
-                runOnUiThread(() -> Toast.makeText(JoinGameActivity.this, R.string.failed_connection, Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> {
+                    Toast.makeText(JoinGameActivity.this, R.string.failed_connection, Toast.LENGTH_LONG).show();
+                    mDeviceListView.setVisibility(View.VISIBLE);
+                });
             }
 
             @Override
@@ -117,6 +119,7 @@ public class JoinGameActivity extends MainActivity {
     }
 
     public void connectToServer(BluetoothDevice server) {
+        mDeviceListView.setVisibility(View.GONE);
         mJoinGameService.connectToServer(server);
     }
 }

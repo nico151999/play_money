@@ -11,7 +11,7 @@
     <string name="cannot_host">Spiel kann nicht ausgerichtet werden</string>
     <string name="cannot_connect_incoming">Verbindung zu einem Gerät konnte nicht aktiviert werden</string>
     <string name="device_cannot_start">Das Gerät %s kann das Spiel nicht beginnen</string>
-    <string name="failed_connection">Der Verbindungsaufbau schlug fehl</string>
+    <string name="failed_connection">Der Verbindungsaufbau schlug fehl. Möglicherweise versuchst du einem bereits gestarteten Spiel beizutreten.</string>
     <string name="error_occurred">Ein Fehler ist aufgetreten</string>
     <string name="wait_for_host">Du bist dem Spiel beigetreten. Bitte warte nun bis der Host das Spiel startet!</string>
     <string name="host_requires_discoverability">Der Spielhost muss während des Erstellens des Spiels sichtbar sein</string>

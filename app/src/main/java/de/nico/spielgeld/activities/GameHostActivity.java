@@ -120,10 +120,15 @@ public class GameHostActivity extends GameActivity {
 
     @Override
     public void sendMoney(BluetoothDevice receivingDevice, Double amount) {
-        Double newAmount = Double.parseDouble(mAccountItem.getTitle().toString()) - amount;
-        mAccountItem.setTitle(newAmount.toString());
-        mClientAdapter.update(receivingDevice, amount);
-        mGameHostService.runOnAll(device -> mGameHostService.write(device, UpdateMessage.create(newAmount, receivingDevice.getAddress()).toString()));
+        Double newOwnAmount = Double.parseDouble(mAccountItem.getTitle().toString()) - amount;
+        mAccountItem.setTitle(newOwnAmount.toString());
+        Double newReceiverAmount = mClientAdapter.update(receivingDevice, amount);
+        String updateReceiverMessage = UpdateMessage.create(newReceiverAmount, receivingDevice.getAddress()).toString();
+        String updateSenderMessage = UpdateMessage.create(newOwnAmount, getBluetoothAddress()).toString();
+        mGameHostService.runOnAll(device -> {
+            mGameHostService.write(device, updateReceiverMessage);
+            mGameHostService.write(device, updateSenderMessage);
+        });
     }
 
     private void receiveSendMessage(BluetoothDevice sendingDevice, SendMessage sendMessage) {

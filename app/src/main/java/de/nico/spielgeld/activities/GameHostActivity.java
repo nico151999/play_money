@@ -131,7 +131,7 @@ public class GameHostActivity extends GameActivity {
         Double newValueReceiver;
         if (receivingDevice.getAddress().equals(getBluetoothAddress())) {
             newValueReceiver = Double.parseDouble(mAccountItem.getTitle().toString()) + sendMessage.getAmount();
-            mAccountItem.setTitle(newValueReceiver.toString());
+            runOnUiThread(() -> mAccountItem.setTitle(newValueReceiver.toString()));
         } else {
             newValueReceiver = mClientAdapter.update(receivingDevice, sendMessage.getAmount());
         }

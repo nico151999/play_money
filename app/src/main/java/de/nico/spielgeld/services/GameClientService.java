@@ -28,6 +28,7 @@ public class GameClientService {
                 gameClientListener.onConnectionInterrupted();
             }
         });
+        mCommunicator.start();
     }
 
     public boolean write(String message) {

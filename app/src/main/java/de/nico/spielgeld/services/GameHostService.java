@@ -17,7 +17,9 @@ public class GameHostService {
     public GameHostService(GameHostListener gameHostListener, List<BluetoothSocket> clients) {
         mCommunicators = new HashMap<>();
         for (BluetoothSocket socket : clients) {
-            mCommunicators.put(socket.getRemoteDevice(), new Communicator(socket, gameHostListener));
+            Communicator communicator = new Communicator(socket, gameHostListener);
+            communicator.start();
+            mCommunicators.put(socket.getRemoteDevice(), communicator);
         }
     }
 

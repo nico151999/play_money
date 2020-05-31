@@ -8,24 +8,15 @@ public class SendMessage {
     private String mTargetAddress;
     private Double mAmount;
 
-    private SendMessage(String message) {
-        String[] messages = message.substring(IDENTIFIER.length() + 1).split(" ", 2);
-        mTargetAddress = messages[1];
-        mAmount = Double.parseDouble(messages[0]);
-    }
-
-    private SendMessage() {}
-
-    public static SendMessage create(Double amount, String targetAddress) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.mAmount = amount;
-        sendMessage.mTargetAddress = targetAddress;
-        return sendMessage;
+    public SendMessage(Double amount, String targetAddress) {
+        mTargetAddress = targetAddress;
+        mAmount = amount;
     }
 
     public static SendMessage parse(String message) {
         if (message.matches(IDENTIFIER + " \\d+\\.\\d+ .{2}:.{2}:.{2}:.{2}:.{2}:.{2}")) {
-            return new SendMessage(message);
+            String[] messages = message.substring(IDENTIFIER.length() + 1).split(" ", 2);
+            return new SendMessage(Double.parseDouble(messages[0]), messages[1]);
         } else {
             return null;
         }

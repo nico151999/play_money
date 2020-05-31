@@ -5,35 +5,27 @@ import androidx.annotation.NonNull;
 public class RemoveMessage {
 
     private static final String IDENTIFIER = "REMOVE";
-    private String mDevice;
+    private String mDeviceAddress;
 
     public static RemoveMessage parse(String message) {
         if (message.matches(IDENTIFIER + " (.{2}:){5}.{2}")) {
-            return new RemoveMessage(message);
+            return new RemoveMessage(message.substring(IDENTIFIER.length() + 1));
         } else {
             return null;
         }
     }
 
-    public static RemoveMessage create(String deviceAddress) {
-        RemoveMessage message = new RemoveMessage();
-        message.mDevice = deviceAddress;
-        return message;
-    }
-
-    private RemoveMessage() {}
-
-    private RemoveMessage(String message) {
-        mDevice = message.substring(IDENTIFIER.length() + 1);
+    public RemoveMessage(String deviceAddress) {
+        mDeviceAddress = deviceAddress;
     }
 
     public String getDevice() {
-        return mDevice;
+        return mDeviceAddress;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return IDENTIFIER + " " + mDevice;
+        return IDENTIFIER + " " + mDeviceAddress;
     }
 }

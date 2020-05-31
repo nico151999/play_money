@@ -8,24 +8,15 @@ public class UpdateMessage {
     private Double mAccount;
     private String mDeviceAddress;
 
-    public static UpdateMessage create(Double account, String deviceAddress) {
-        UpdateMessage updateMessage = new UpdateMessage();
-        updateMessage.mAccount = account;
-        updateMessage.mDeviceAddress = deviceAddress;
-        return updateMessage;
-    }
-
-    private UpdateMessage() {}
-
-    private UpdateMessage(String message) {
-        String[] messages = message.substring(IDENTIFIER.length() + 1).split(" ", 2);
-        mDeviceAddress = messages[0];
-        mAccount = Double.parseDouble(messages[1]);
+    public UpdateMessage(Double account, String deviceAddress) {
+        mAccount = account;
+        mDeviceAddress = deviceAddress;
     }
 
     public static UpdateMessage parse(String message) {
         if (message.matches(IDENTIFIER + " (.{2}:){5}.{2} -?\\d+\\.\\d+")) {
-            return new UpdateMessage(message);
+            String[] messages = message.substring(IDENTIFIER.length() + 1).split(" ", 2);
+            return new UpdateMessage(Double.parseDouble(messages[1]), messages[0]);
         } else {
             return null;
         }

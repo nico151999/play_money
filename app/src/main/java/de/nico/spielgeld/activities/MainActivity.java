@@ -25,7 +25,7 @@ public abstract class MainActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 5647;
     private static final int REQUEST_MAKE_DISCOVERABLE = 868;
     private BluetoothAdapter mBluetoothAdapter;
-    private BroadcastReceiver mReceiver = new BluetoothIntentReceiver();
+    private BroadcastReceiver mReceiver;
     private static final int PERMISSION_REQUEST_CODE = 516;
 
     @Override
@@ -33,6 +33,7 @@ public abstract class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mReceiver = new BluetoothIntentReceiver();
 
         if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.bluetooth_not_available, Toast.LENGTH_LONG).show();
@@ -51,14 +52,9 @@ public abstract class MainActivity extends AppCompatActivity {
                     PERMISSION_REQUEST_CODE
             );
         }
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BT);
         }
     }
 

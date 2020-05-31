@@ -13,12 +13,6 @@ public class StartMessage {
         }
     }
 
-    public static StartMessage create() {
-        return new StartMessage();
-    }
-
-    private StartMessage() {}
-
     @NonNull
     @Override
     public String toString() {

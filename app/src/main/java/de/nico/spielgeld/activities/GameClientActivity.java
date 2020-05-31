@@ -8,10 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -23,11 +19,8 @@ import de.nico.spielgeld.parser.SendMessage;
 import de.nico.spielgeld.parser.StandingMessage;
 import de.nico.spielgeld.parser.UpdateMessage;
 import de.nico.spielgeld.services.GameClientService;
-import de.nico.spielgeld.views.ClientBluetoothDeviceRecyclerAdapter;
 
 public class GameClientActivity extends GameActivity {
-
-    private ClientBluetoothDeviceRecyclerAdapter mOpponentsAdapter;
     private GameClientService mGameClientService;
     private String mBluetoothAddress; // needs to be set by server, as own address cannot be determined
     private MenuItem mAccountItem;
@@ -35,7 +28,6 @@ public class GameClientActivity extends GameActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_host_client);
 
         BluetoothSocket host = InterActivitySockets.host;
         if (host == null) {
@@ -86,7 +78,7 @@ public class GameClientActivity extends GameActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_account, menu);
         mAccountItem = menu.findItem(R.id.account);
-        if (!mGameClientService.write(RequestMessage.create().toString())) {
+        if (!mGameClientService.write(new RequestMessage().toString())) {
             Toast.makeText(this, R.string.cannot_initialize_game, Toast.LENGTH_LONG).show();
             finish();
         }
@@ -104,13 +96,13 @@ public class GameClientActivity extends GameActivity {
             if (updateMessage.getDeviceAddress().equals(mBluetoothAddress)) {
                 mAccountItem.setTitle(updateMessage.getAccount().toString());
             } else {
-                mOpponentsAdapter.updateTotal(getBluetoothAdapter().getRemoteDevice(updateMessage.getDeviceAddress()), updateMessage.getAccount());
+                getOpponentsAdapter().updateTotal(getBluetoothAdapter().getRemoteDevice(updateMessage.getDeviceAddress()), updateMessage.getAccount());
             }
         });
     }
 
     private void receiveRemoveMessage(RemoveMessage removeMessage) {
-        runOnUiThread(() -> mOpponentsAdapter.remove(getBluetoothAdapter().getRemoteDevice(removeMessage.getDevice())));
+        runOnUiThread(() -> getOpponentsAdapter().remove(getBluetoothAdapter().getRemoteDevice(removeMessage.getDevice())));
     }
 
     private void receiveStandingMessage(StandingMessage standingMessage) {
@@ -123,18 +115,11 @@ public class GameClientActivity extends GameActivity {
                 accounts.put(getBluetoothAdapter().getRemoteDevice(account.getKey()), new Pair<>(account.getValue().first, account.getValue().second));
             }
         }
-        runOnUiThread(() -> {
-            RecyclerView opponentListView = findViewById(R.id.client_list);
-            mOpponentsAdapter = new ClientBluetoothDeviceRecyclerAdapter(this, accounts);
-            opponentListView.setAdapter(mOpponentsAdapter);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            opponentListView.setLayoutManager(layoutManager);
-            opponentListView.addItemDecoration(new DividerItemDecoration(opponentListView.getContext(), layoutManager.getOrientation()));
-        });
+        runOnUiThread(() -> setOpponentsAdapter(accounts));
     }
 
     @Override
     public void sendMoney(BluetoothDevice device, Double amount) {
-        mGameClientService.write(SendMessage.create(amount, device.getAddress()).toString());
+        mGameClientService.write(new SendMessage(amount, device.getAddress()).toString());
     }
 }

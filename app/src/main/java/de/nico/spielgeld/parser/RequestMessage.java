@@ -14,12 +14,6 @@ public class RequestMessage {
         }
     }
 
-    public static RequestMessage create() {
-        return new RequestMessage();
-    }
-
-    private RequestMessage() {}
-
     @NonNull
     @Override
     public String toString() {

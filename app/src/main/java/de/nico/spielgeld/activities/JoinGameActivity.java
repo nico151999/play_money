@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.ParcelUuid;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Toast;
 
@@ -31,8 +31,7 @@ public class JoinGameActivity extends MainActivity {
     private MaterialTextView mWaitInformationView;
     private JoinBluetoothDeviceRecyclerAdapter mJoinRecyclerAdapter;
     private JoinGameService mJoinGameService;
-
-    private ArrayList<BluetoothDevice> mFoundDevices = new ArrayList<>();
+    private ArrayList<BluetoothDevice> mFoundDevices;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +41,8 @@ public class JoinGameActivity extends MainActivity {
         mDeviceListView = findViewById(R.id.found_devices);
         mSwipeRefreshLayout = findViewById(R.id.refresh_layout);
         mWaitInformationView = findViewById(R.id.wait_information);
+
+        mFoundDevices = new ArrayList<>();
 
         mJoinRecyclerAdapter = new JoinBluetoothDeviceRecyclerAdapter(this);
         mDeviceListView.setAdapter(mJoinRecyclerAdapter);
@@ -104,18 +105,28 @@ public class JoinGameActivity extends MainActivity {
 
     @Override
     protected void onBluetoothDiscoveryFinished() {
-        for (BluetoothDevice device : mFoundDevices) {
-            ParcelUuid[] uuids = device.getUuids();
-            if (uuids != null) {
-                for (ParcelUuid uuid : uuids) {
-                    if (uuid.getUuid().compareTo(Constants.UUID) == 0) {
-                        mJoinRecyclerAdapter.add(device);
-                        break;
-                    }
+        if (mFoundDevices.isEmpty()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        } else {
+            promptForUuidFetch(mFoundDevices.remove(0));
+        }
+    }
+
+    @Override
+    protected void onUuidFetched(BluetoothDevice device, Parcelable[] uuids) {
+        if (uuids != null) {
+            for (Parcelable uuid : uuids) {
+                if (uuid.toString().equals(Constants.UUID.toString())) {
+                    mJoinRecyclerAdapter.add(device);
+                    break;
                 }
             }
         }
-        mSwipeRefreshLayout.setRefreshing(false);
+        if (mFoundDevices.isEmpty()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        } else {
+            promptForUuidFetch(mFoundDevices.remove(0));
+        }
     }
 
     public void connectToServer(BluetoothDevice server) {

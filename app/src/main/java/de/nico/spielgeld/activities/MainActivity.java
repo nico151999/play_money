@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,6 +44,7 @@ public abstract class MainActivity extends AppCompatActivity {
         registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
         registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
         registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+        registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_UUID));
 
         List<String> permissions = getUnGrantedPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION});
         if (permissions.size() > 0) {
@@ -124,6 +126,12 @@ public abstract class MainActivity extends AppCompatActivity {
                     case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                         onBluetoothDiscoveryFinished();
                         break;
+                    case BluetoothDevice.ACTION_UUID:
+                        onUuidFetched(
+                                intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE),
+                                intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID)
+                        );
+                        break;
                 }
             }
         }
@@ -134,10 +142,14 @@ public abstract class MainActivity extends AppCompatActivity {
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 3600);
         startActivityForResult(discoverableIntent, REQUEST_MAKE_DISCOVERABLE);
     }
+    protected void promptForUuidFetch(BluetoothDevice device) {
+        device.fetchUuidsWithSdp();
+    }
     protected BluetoothAdapter getBluetoothAdapter() {
         return mBluetoothAdapter;
     }
     protected void onBluetoothDiscoveryDeviceFound(BluetoothDevice device) {}
     protected void onBluetoothDiscoveryFinished() {}
     protected void onDiscoverabilityPromptResult(boolean discoverable) {}
+    protected void onUuidFetched(BluetoothDevice device, Parcelable[] uuids) {}
 }

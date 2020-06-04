@@ -2,6 +2,7 @@ package de.nico.spielgeld.views;
 
 import android.bluetooth.BluetoothDevice;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -11,14 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import de.nico.spielgeld.R;
 import de.nico.spielgeld.activities.JoinGameActivity;
 
 public class JoinBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<JoinBluetoothDeviceRecyclerAdapter.ViewHolder> {
 
-    private List<BluetoothDevice> mDevices = new ArrayList<>();
+    private LinkedHashMap<BluetoothDevice, Boolean> mDevices = new LinkedHashMap<>();
     private JoinGameActivity mContext;
 
     public JoinBluetoothDeviceRecyclerAdapter(JoinGameActivity activity) {
@@ -35,10 +37,19 @@ public class JoinBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<Joi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        BluetoothDevice device = mDevices.get(position);
+        Map.Entry<BluetoothDevice, Boolean> set = (Map.Entry<BluetoothDevice, Boolean>) mDevices.entrySet().toArray()[position];
+        BluetoothDevice device = set.getKey();
+        boolean isAppDevice = set.getValue();
         String text = device.getName();
-        ((MaterialTextView) holder.mmDeviceView.getChildAt(0)).setText(text == null ? mContext.getString(R.string.unknown_device) : text);
-        holder.mmDeviceView.getChildAt(1).setOnClickListener((view) -> mContext.connectToServer(device));
+        if (isAppDevice || mContext.isShowAllEnabled()) {
+            ((MaterialTextView) holder.mmDeviceView.getChildAt(0)).setText(text == null ? mContext.getString(R.string.unknown_device) : text);
+            holder.mmDeviceView.getChildAt(1).setOnClickListener((view) -> mContext.connectToServer(device));
+            holder.mmDeviceView.setVisibility(View.VISIBLE);
+            holder.mmDeviceView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        } else {
+            holder.mmDeviceView.setVisibility(View.GONE);
+            holder.mmDeviceView.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+        }
     }
 
     @Override
@@ -46,11 +57,21 @@ public class JoinBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<Joi
         return mDevices.size();
     }
 
-    public void add(BluetoothDevice device) {
-        if (!mDevices.contains(device)) {
-            mDevices.add(device);
+    public void add(BluetoothDevice device, Boolean appDevice) {
+        if (!mDevices.containsKey(device)) {
+            mDevices.put(device, appDevice);
             notifyItemInserted(mDevices.size() - 1);
         }
+    }
+
+    public void setIsAppDevice(BluetoothDevice device) {
+        if (mDevices.replace(device, true) != null) {
+            notifyItemChanged(new ArrayList<>(mDevices.keySet()).indexOf(device));
+        }
+    }
+
+    public BluetoothDevice getBluetoothDevice(int i) {
+        return ((Map.Entry<BluetoothDevice, Boolean>) mDevices.entrySet().toArray()[i]).getKey();
     }
 
     public void clear() {

@@ -23,4 +23,5 @@
     <string name="cannot_read_from_server">No data from the host can be read</string>
     <string name="cannot_write_to_server">No data can be sent to the host</string>
     <string name="cannot_initialize_game">The game can not be started</string>
+    <string name="show_all_devices">Show all devices</string>
 </resources>

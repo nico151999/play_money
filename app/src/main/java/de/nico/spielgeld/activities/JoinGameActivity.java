@@ -9,14 +9,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.textview.MaterialTextView;
-
-import java.util.ArrayList;
 
 import de.nico.spielgeld.Constants;
 import de.nico.spielgeld.InterActivitySockets;
@@ -27,28 +26,27 @@ import de.nico.spielgeld.views.JoinBluetoothDeviceRecyclerAdapter;
 public class JoinGameActivity extends MainActivity {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView mDeviceListView;
+    private MaterialCheckBox mShowAllView;
+    private ConstraintLayout mDevicesContainerView;
     private MaterialTextView mWaitInformationView;
     private JoinBluetoothDeviceRecyclerAdapter mJoinRecyclerAdapter;
     private JoinGameService mJoinGameService;
-    private ArrayList<BluetoothDevice> mFoundDevices;
+    private int mFetchedDeviceCount;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_game);
 
-        mDeviceListView = findViewById(R.id.found_devices);
+        RecyclerView deviceListView = findViewById(R.id.found_devices);
         mSwipeRefreshLayout = findViewById(R.id.refresh_layout);
         mWaitInformationView = findViewById(R.id.wait_information);
-
-        mFoundDevices = new ArrayList<>();
+        mShowAllView = findViewById(R.id.show_all);
+        mDevicesContainerView = findViewById(R.id.found_devices_container);
 
         mJoinRecyclerAdapter = new JoinBluetoothDeviceRecyclerAdapter(this);
-        mDeviceListView.setAdapter(mJoinRecyclerAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mDeviceListView.setLayoutManager(layoutManager);
-        mDeviceListView.addItemDecoration(new DividerItemDecoration(mDeviceListView.getContext(), layoutManager.getOrientation()));
+        deviceListView.setAdapter(mJoinRecyclerAdapter);
+        deviceListView.setLayoutManager(new LinearLayoutManager(this));
 
         mJoinGameService = new JoinGameService(new JoinGameService.JoinGameServiceListener() {
             @Override
@@ -64,7 +62,7 @@ public class JoinGameActivity extends MainActivity {
             public void onFailedToEstablishConnection() {
                 runOnUiThread(() -> {
                     Toast.makeText(JoinGameActivity.this, R.string.failed_connection, Toast.LENGTH_LONG).show();
-                    mDeviceListView.setVisibility(View.VISIBLE);
+                    mDevicesContainerView.setVisibility(View.VISIBLE);
                 });
             }
 
@@ -87,12 +85,14 @@ public class JoinGameActivity extends MainActivity {
                 getBluetoothAdapter().startDiscovery();
             }
         });
+
+        mShowAllView.setOnCheckedChangeListener((view, checked) -> mJoinRecyclerAdapter.notifyDataSetChanged());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!getBluetoothAdapter().isDiscovering() && mSwipeRefreshLayout.isEnabled()) {
+        if (!mSwipeRefreshLayout.isRefreshing() && mDevicesContainerView.getVisibility() == View.VISIBLE) {
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
             getBluetoothAdapter().startDiscovery();
         }
@@ -100,16 +100,13 @@ public class JoinGameActivity extends MainActivity {
 
     @Override
     protected void onBluetoothDiscoveryDeviceFound(BluetoothDevice device) {
-        mFoundDevices.add(device);
+        mJoinRecyclerAdapter.add(device, false);
     }
 
     @Override
     protected void onBluetoothDiscoveryFinished() {
-        if (mFoundDevices.isEmpty()) {
-            mSwipeRefreshLayout.setRefreshing(false);
-        } else {
-            promptForUuidFetch(mFoundDevices.remove(0));
-        }
+        mFetchedDeviceCount = mJoinRecyclerAdapter.getItemCount();
+        uuidFetch();
     }
 
     @Override
@@ -117,20 +114,28 @@ public class JoinGameActivity extends MainActivity {
         if (uuids != null) {
             for (Parcelable uuid : uuids) {
                 if (uuid.toString().equals(Constants.UUID.toString())) {
-                    mJoinRecyclerAdapter.add(device);
+                    mJoinRecyclerAdapter.setIsAppDevice(device);
                     break;
                 }
             }
         }
-        if (mFoundDevices.isEmpty()) {
-            mSwipeRefreshLayout.setRefreshing(false);
+        uuidFetch();
+    }
+
+    public boolean isShowAllEnabled() {
+        return mShowAllView.isChecked();
+    }
+
+    private void uuidFetch() {
+        if (mFetchedDeviceCount-- > 0 && mDevicesContainerView.getVisibility() == View.VISIBLE) {
+            promptForUuidFetch(mJoinRecyclerAdapter.getBluetoothDevice(mFetchedDeviceCount));
         } else {
-            promptForUuidFetch(mFoundDevices.remove(0));
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
     public void connectToServer(BluetoothDevice server) {
-        mDeviceListView.setVisibility(View.GONE);
+        mDevicesContainerView.setVisibility(View.GONE);
         mJoinGameService.connectToServer(server);
     }
 }

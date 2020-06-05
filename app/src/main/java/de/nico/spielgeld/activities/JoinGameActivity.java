@@ -135,6 +135,10 @@ public class JoinGameActivity extends MainActivity {
     }
 
     public void connectToServer(BluetoothDevice server) {
+        if (getBluetoothAdapter().isDiscovering()) {
+            getBluetoothAdapter().cancelDiscovery();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
         mDevicesContainerView.setVisibility(View.GONE);
         mJoinGameService.connectToServer(server);
     }

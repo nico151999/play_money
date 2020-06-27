@@ -29,9 +29,11 @@ public abstract class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mReceiver;
     private static final int PERMISSION_REQUEST_CODE = 516;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState, int contentView) {
         super.onCreate(savedInstanceState);
+        setContentView(contentView);
+
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mReceiver = new BluetoothIntentReceiver();

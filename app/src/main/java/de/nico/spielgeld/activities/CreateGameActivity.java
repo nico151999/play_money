@@ -3,6 +3,8 @@ package de.nico.spielgeld.activities;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
+import android.transition.Fade;
+import android.transition.Transition;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -23,8 +25,14 @@ public class CreateGameActivity extends MainActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_game);
+        super.onCreate(savedInstanceState, R.layout.activity_create_game);
+
+        Transition fade = new Fade();
+        fade.excludeTarget(R.id.appbar_layout, true);
+        fade.excludeTarget(android.R.id.navigationBarBackground,true);
+        fade.excludeTarget(android.R.id.statusBarBackground, true);
+        getWindow().setExitTransition(fade);
+        getWindow().setEnterTransition(fade);
 
         MaterialButton startGameView = findViewById(R.id.start_game);
         RecyclerView recyclerView = findViewById(R.id.joint_devices);

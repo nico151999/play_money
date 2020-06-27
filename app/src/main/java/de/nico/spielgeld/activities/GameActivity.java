@@ -19,8 +19,7 @@ public abstract class GameActivity extends MainActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+        super.onCreate(savedInstanceState, R.layout.activity_game);
     }
 
     public abstract void sendMoney(BluetoothDevice device, Double amount);

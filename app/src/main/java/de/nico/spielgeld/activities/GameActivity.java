@@ -22,12 +22,12 @@ public abstract class GameActivity extends MainActivity {
         super.onCreate(savedInstanceState, R.layout.activity_game);
     }
 
-    public abstract void sendMoney(BluetoothDevice device, Double amount);
+    public abstract void sendMoney(BluetoothDevice device, Integer amount);
     String getBluetoothAddress() {
         //return Settings.Secure.getString(this.getContentResolver(), "bluetooth_address"); This does not work without a system level permission called LOCAL_MAC_ADDRESS
         return getBluetoothAdapter().getAddress(); // always returns 02:00:00:00:00:00
     }
-    void setOpponentsAdapter(LinkedHashMap<BluetoothDevice, Pair<String, Double>> accounts) {
+    void setOpponentsAdapter(LinkedHashMap<BluetoothDevice, Pair<String, Integer>> accounts) {
         RecyclerView opponentListView = findViewById(R.id.client_list);
         mOpponentsAdapter = new ClientBluetoothDeviceRecyclerAdapter(this, accounts);
         opponentListView.setAdapter(mOpponentsAdapter);

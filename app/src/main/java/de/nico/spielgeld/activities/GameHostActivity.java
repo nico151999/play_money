@@ -41,7 +41,7 @@ public class GameHostActivity extends GameActivity {
         } else {
             InterActivitySockets.clients = null;
         }
-        LinkedHashMap<BluetoothDevice, Pair<String, Double>> accounts = new LinkedHashMap<>();
+        LinkedHashMap<BluetoothDevice, Pair<String, Integer>> accounts = new LinkedHashMap<>();
         for (BluetoothSocket socket : clientSockets) {
             accounts.put(socket.getRemoteDevice(), new Pair<>(socket.getRemoteDevice().getName(), Constants.INITIAL_ACCOUNT));
         }
@@ -105,10 +105,10 @@ public class GameHostActivity extends GameActivity {
     }
 
     @Override
-    public void sendMoney(BluetoothDevice receivingDevice, Double amount) {
-        Double newOwnAmount = Double.parseDouble(mAccountItem.getTitle().toString()) - amount;
+    public void sendMoney(BluetoothDevice receivingDevice, Integer amount) {
+        Integer newOwnAmount = Integer.parseInt(mAccountItem.getTitle().toString()) - amount;
         mAccountItem.setTitle(newOwnAmount.toString());
-        Double newReceiverAmount = getOpponentsAdapter().update(receivingDevice, amount);
+        Integer newReceiverAmount = getOpponentsAdapter().update(receivingDevice, amount);
         String updateReceiverMessage = new UpdateMessage(newReceiverAmount, receivingDevice.getAddress()).toString();
         String updateSenderMessage = new UpdateMessage(newOwnAmount, getBluetoothAddress()).toString();
         mGameHostService.runOnAll(device -> {
@@ -120,14 +120,14 @@ public class GameHostActivity extends GameActivity {
     private void receiveSendMessage(BluetoothDevice sendingDevice, SendMessage sendMessage) {
         runOnUiThread(() -> {
             BluetoothDevice receivingDevice = getBluetoothAdapter().getRemoteDevice(sendMessage.getTargetAddress());
-            Double newValueReceiver;
+            Integer newValueReceiver;
             if (receivingDevice.getAddress().equals(getBluetoothAddress())) {
-                newValueReceiver = Double.parseDouble(mAccountItem.getTitle().toString()) + sendMessage.getAmount();
+                newValueReceiver = Integer.parseInt(mAccountItem.getTitle().toString()) + sendMessage.getAmount();
                 mAccountItem.setTitle(newValueReceiver.toString());
             } else {
                 newValueReceiver = getOpponentsAdapter().update(receivingDevice, sendMessage.getAmount());
             }
-            Double newValueSender = getOpponentsAdapter().update(sendingDevice, -sendMessage.getAmount());
+            Integer newValueSender = getOpponentsAdapter().update(sendingDevice, -sendMessage.getAmount());
             String updateReceiverMessage = new UpdateMessage(newValueReceiver, receivingDevice.getAddress()).toString();
             String updateSenderMessage = new UpdateMessage(newValueSender, sendingDevice.getAddress()).toString();
             mGameHostService.runOnAll(device -> {
@@ -138,11 +138,11 @@ public class GameHostActivity extends GameActivity {
     }
 
     private void receiveRequestMessage(BluetoothDevice requestingDevice) {
-        Map<String, Pair<String, Double>> standings = new HashMap<>();
-        for (Map.Entry<BluetoothDevice, Pair<String, Double>> account : getOpponentsAdapter().getAccounts().entrySet()) {
+        Map<String, Pair<String, Integer>> standings = new HashMap<>();
+        for (Map.Entry<BluetoothDevice, Pair<String, Integer>> account : getOpponentsAdapter().getAccounts().entrySet()) {
             standings.put(account.getKey().getAddress(), account.getValue());
         }
-        standings.put(getBluetoothAddress(), new Pair<>(getBluetoothAdapter().getName(), Double.parseDouble(mAccountItem.getTitle().toString())));
+        standings.put(getBluetoothAddress(), new Pair<>(getBluetoothAdapter().getName(), Integer.parseInt(mAccountItem.getTitle().toString())));
         mGameHostService.write(requestingDevice, new StandingMessage(standings, requestingDevice.getAddress()).toString());
     }
 }

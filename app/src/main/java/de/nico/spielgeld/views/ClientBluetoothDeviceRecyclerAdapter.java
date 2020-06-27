@@ -22,10 +22,10 @@ import de.nico.spielgeld.activities.GameActivity;
 
 public class ClientBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<ClientBluetoothDeviceRecyclerAdapter.ViewHolder> {
 
-    private LinkedHashMap<BluetoothDevice, Pair<String, Double>> mAccounts;
+    private LinkedHashMap<BluetoothDevice, Pair<String, Integer>> mAccounts;
     private GameActivity mContext;
 
-    public ClientBluetoothDeviceRecyclerAdapter(GameActivity context, LinkedHashMap<BluetoothDevice, Pair<String, Double>> accounts) {
+    public ClientBluetoothDeviceRecyclerAdapter(GameActivity context, LinkedHashMap<BluetoothDevice, Pair<String, Integer>> accounts) {
         mContext = context;
         mAccounts = accounts;
         notifyDataSetChanged();
@@ -41,19 +41,19 @@ public class ClientBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<C
 
     @Override
     public void onBindViewHolder(@NonNull ClientBluetoothDeviceRecyclerAdapter.ViewHolder holder, int position) {
-        Map.Entry<BluetoothDevice, Pair<String, Double>> set = (Map.Entry<BluetoothDevice, Pair<String, Double>>) mAccounts.entrySet().toArray()[position];
+        Map.Entry<BluetoothDevice, Pair<String, Integer>> set = (Map.Entry<BluetoothDevice, Pair<String, Integer>>) mAccounts.entrySet().toArray()[position];
         BluetoothDevice device = set.getKey();
         String text = set.getValue().first;
-        Double account = set.getValue().second;
+        Integer account = set.getValue().second;
         LinearLayout rowOne = (LinearLayout) holder.mmDeviceView.getChildAt(0);
         LinearLayout rowTwo = (LinearLayout) holder.mmDeviceView.getChildAt(1);
         ((MaterialTextView) rowOne.getChildAt(0)).setText(text == null ? mContext.getString(R.string.unknown_device) : text);
         ((MaterialTextView) rowOne.getChildAt(1)).setText(account == null ? Constants.INITIAL_ACCOUNT.toString() : account.toString());
-        rowTwo.getChildAt(0).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
-        rowTwo.getChildAt(1).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
-        rowTwo.getChildAt(2).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
-        rowTwo.getChildAt(3).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
-        rowTwo.getChildAt(4).setOnClickListener((view) -> mContext.sendMoney(device, Double.parseDouble(((MaterialButton) view).getText().toString())));
+        rowTwo.getChildAt(0).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
+        rowTwo.getChildAt(1).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
+        rowTwo.getChildAt(2).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
+        rowTwo.getChildAt(3).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
+        rowTwo.getChildAt(4).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
     }
 
     @Override
@@ -66,19 +66,19 @@ public class ClientBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<C
         notifyDataSetChanged();
     }
 
-    public Double update(BluetoothDevice device, Double delta) {
-        Pair<String, Double> oldEntry = mAccounts.get(device);
-        Double newValue = oldEntry.second + delta;
+    public Integer update(BluetoothDevice device, Integer delta) {
+        Pair<String, Integer> oldEntry = mAccounts.get(device);
+        Integer newValue = oldEntry.second + delta;
         mAccounts.put(device, new Pair<>(oldEntry.first, newValue));
         notifyItemChanged(new ArrayList<>(mAccounts.keySet()).indexOf(device));
         return newValue;
     }
 
-    public LinkedHashMap<BluetoothDevice, Pair<String, Double>> getAccounts() {
+    public LinkedHashMap<BluetoothDevice, Pair<String, Integer>> getAccounts() {
         return mAccounts;
     }
 
-    public void updateTotal(BluetoothDevice device, Double account) {
+    public void updateTotal(BluetoothDevice device, Integer account) {
         mAccounts.replace(device, new Pair<>(mAccounts.get(device).first, account));
         notifyItemChanged(new ArrayList<>(mAccounts.keySet()).indexOf(device));
     }

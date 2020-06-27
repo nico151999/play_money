@@ -5,24 +5,24 @@ import androidx.annotation.NonNull;
 public class UpdateMessage {
 
     private static final String IDENTIFIER = "UPDATE";
-    private Double mAccount;
+    private Integer mAccount;
     private String mDeviceAddress;
 
-    public UpdateMessage(Double account, String deviceAddress) {
+    public UpdateMessage(Integer account, String deviceAddress) {
         mAccount = account;
         mDeviceAddress = deviceAddress;
     }
 
     public static UpdateMessage parse(String message) {
-        if (message.matches(IDENTIFIER + " (.{2}:){5}.{2} -?\\d+\\.\\d+")) {
+        if (message.matches(IDENTIFIER + " (.{2}:){5}.{2} -?\\d+")) {
             String[] messages = message.substring(IDENTIFIER.length() + 1).split(" ", 2);
-            return new UpdateMessage(Double.parseDouble(messages[1]), messages[0]);
+            return new UpdateMessage(Integer.parseInt(messages[1]), messages[0]);
         } else {
             return null;
         }
     }
 
-    public Double getAccount() {
+    public Integer getAccount() {
         return mAccount;
     }
 

@@ -107,8 +107,8 @@ public class GameClientActivity extends GameActivity {
 
     private void receiveStandingMessage(StandingMessage standingMessage) {
         mBluetoothAddress = standingMessage.getBluetoothAddress();
-        LinkedHashMap<BluetoothDevice, Pair<String, Double>> accounts = new LinkedHashMap<>();
-        for (Map.Entry<String, Pair<String, Double>> account : standingMessage.getAccounts().entrySet()) {
+        LinkedHashMap<BluetoothDevice, Pair<String, Integer>> accounts = new LinkedHashMap<>();
+        for (Map.Entry<String, Pair<String, Integer>> account : standingMessage.getAccounts().entrySet()) {
             if (account.getKey().equals(mBluetoothAddress)) {
                 runOnUiThread(() -> mAccountItem.setTitle(account.getValue().second.toString()));
             } else {
@@ -119,7 +119,7 @@ public class GameClientActivity extends GameActivity {
     }
 
     @Override
-    public void sendMoney(BluetoothDevice device, Double amount) {
+    public void sendMoney(BluetoothDevice device, Integer amount) {
         mGameClientService.write(new SendMessage(amount, device.getAddress()).toString());
     }
 }

@@ -6,17 +6,17 @@ public class SendMessage {
 
     private static final String IDENTIFIER = "SEND";
     private String mTargetAddress;
-    private Double mAmount;
+    private Integer mAmount;
 
-    public SendMessage(Double amount, String targetAddress) {
+    public SendMessage(Integer amount, String targetAddress) {
         mTargetAddress = targetAddress;
         mAmount = amount;
     }
 
     public static SendMessage parse(String message) {
-        if (message.matches(IDENTIFIER + " \\d+\\.\\d+ .{2}:.{2}:.{2}:.{2}:.{2}:.{2}")) {
+        if (message.matches(IDENTIFIER + " \\d+ .{2}:.{2}:.{2}:.{2}:.{2}:.{2}")) {
             String[] messages = message.substring(IDENTIFIER.length() + 1).split(" ", 2);
-            return new SendMessage(Double.parseDouble(messages[0]), messages[1]);
+            return new SendMessage(Integer.parseInt(messages[0]), messages[1]);
         } else {
             return null;
         }
@@ -26,7 +26,7 @@ public class SendMessage {
         return mTargetAddress;
     }
 
-    public Double getAmount() {
+    public Integer getAmount() {
         return mAmount;
     }
 

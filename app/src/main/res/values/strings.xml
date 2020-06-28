@@ -29,4 +29,5 @@
     <string name="show_all_devices">Alle Geräte anzeigen</string>
     <string name="create_game_transition" translatable="false">CREATE_GAME_TRANSITION</string>
     <string name="join_game_transition" translatable="false">JOIN_GAME_TRANSITION</string>
+    <string name="waiting_for_players">Warte bis mindestens ein anderer Spieler beigetreten ist</string>
 </resources>

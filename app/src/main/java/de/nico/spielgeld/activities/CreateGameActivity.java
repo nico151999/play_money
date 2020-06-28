@@ -3,6 +3,7 @@ package de.nico.spielgeld.activities;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -28,6 +29,8 @@ public class CreateGameActivity extends MainActivity {
         MaterialButton startGameView = findViewById(R.id.start_game);
         RecyclerView recyclerView = findViewById(R.id.joint_devices);
 
+        startGameView.setEnabled(false);
+
         mJointRecyclerAdapter = new JointBluetoothDeviceRecyclerAdapter(this);
         recyclerView.setAdapter(mJointRecyclerAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -48,6 +51,12 @@ public class CreateGameActivity extends MainActivity {
 
             @Override
             public void onClientConnected(BluetoothSocket client) {
+                if (!startGameView.isEnabled()) {
+                    runOnUiThread(() -> {
+                        startGameView.setEnabled(true);
+                        findViewById(R.id.waiting_for_players_information).setVisibility(View.GONE);
+                    });
+                }
                 runOnUiThread(() -> mJointRecyclerAdapter.add(client));
             }
         });

@@ -8,10 +8,10 @@ import android.os.Parcelable;
 import android.transition.Fade;
 import android.transition.Transition;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -29,7 +29,7 @@ public class JoinGameActivity extends MainActivity {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MaterialCheckBox mShowAllView;
-    private ConstraintLayout mDevicesContainerView;
+    private LinearLayout mDevicesContainerView;
     private MaterialTextView mWaitInformationView;
     private JoinBluetoothDeviceRecyclerAdapter mJoinRecyclerAdapter;
     private JoinGameService mJoinGameService;

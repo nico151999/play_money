@@ -15,6 +15,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             app:titleTextColor="@android:color/white"
+            android:transitionName="@string/join_game_transition"
             android:layout_height="wrap_content"
             android:layout_width="match_parent" />
 
@@ -24,6 +25,7 @@
         android:id="@+id/join_game_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:text="@string/join_game"
         app:layout_constraintBottom_toTopOf="@id/create_game_button"
         app:layout_constraintLeft_toLeftOf="parent"

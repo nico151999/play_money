@@ -30,7 +30,12 @@ public class StartActivity extends MainActivity {
                 ).toBundle()
         ));
         findViewById(R.id.join_game_button).setOnClickListener((view) -> startActivity(
-                new Intent(this, JoinGameActivity.class)
+                new Intent(this, JoinGameActivity.class),
+                ActivityOptions.makeSceneTransitionAnimation(
+                        this,
+                        view,
+                        getString(R.string.join_game_transition)
+                ).toBundle()
         ));
     }
 }

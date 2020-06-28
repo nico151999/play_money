@@ -5,8 +5,6 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.transition.Fade;
-import android.transition.Transition;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -38,13 +36,6 @@ public class JoinGameActivity extends MainActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_join_game);
-
-        Transition fade = new Fade();
-        fade.excludeTarget(R.id.appbar_layout, true);
-        fade.excludeTarget(android.R.id.navigationBarBackground,true);
-        fade.excludeTarget(android.R.id.statusBarBackground, true);
-        getWindow().setExitTransition(fade);
-        getWindow().setEnterTransition(fade);
 
         RecyclerView deviceListView = findViewById(R.id.found_devices);
         mSwipeRefreshLayout = findViewById(R.id.refresh_layout);

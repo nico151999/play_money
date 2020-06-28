@@ -10,6 +10,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.transition.Fade;
+import android.transition.Transition;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,13 @@ public abstract class MainActivity extends AppCompatActivity {
         setContentView(contentView);
 
         setSupportActionBar(findViewById(R.id.toolbar));
+
+        Transition fade = new Fade();
+        fade.excludeTarget(R.id.toolbar, true);
+        fade.excludeTarget(android.R.id.navigationBarBackground,true);
+        fade.excludeTarget(android.R.id.statusBarBackground, true);
+        getWindow().setExitTransition(fade);
+        getWindow().setEnterTransition(fade);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mReceiver = new BluetoothIntentReceiver();

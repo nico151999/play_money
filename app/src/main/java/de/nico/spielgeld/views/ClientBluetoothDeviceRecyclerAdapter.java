@@ -1,15 +1,18 @@
 package de.nico.spielgeld.views;
 
 import android.bluetooth.BluetoothDevice;
+import android.graphics.Color;
 import android.util.Pair;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
@@ -34,9 +37,10 @@ public class ClientBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<C
     @NonNull
     @Override
     public ClientBluetoothDeviceRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_client_bluetooth_device, parent, false);
-        return new ClientBluetoothDeviceRecyclerAdapter.ViewHolder(v);
+        return new ClientBluetoothDeviceRecyclerAdapter.ViewHolder(
+                (LinearLayout) LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_client_bluetooth_device, parent, false)
+        );
     }
 
     @Override
@@ -45,15 +49,37 @@ public class ClientBluetoothDeviceRecyclerAdapter extends RecyclerView.Adapter<C
         BluetoothDevice device = set.getKey();
         String text = set.getValue().first;
         Integer account = set.getValue().second;
-        LinearLayout rowOne = (LinearLayout) holder.mmDeviceView.getChildAt(0);
-        LinearLayout rowTwo = (LinearLayout) holder.mmDeviceView.getChildAt(1);
-        ((MaterialTextView) rowOne.getChildAt(0)).setText(text == null ? mContext.getString(R.string.unknown_device) : text);
-        ((MaterialTextView) rowOne.getChildAt(1)).setText(account == null ? Constants.INITIAL_ACCOUNT.toString() : account.toString());
-        rowTwo.getChildAt(0).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
-        rowTwo.getChildAt(1).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
-        rowTwo.getChildAt(2).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
-        rowTwo.getChildAt(3).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
-        rowTwo.getChildAt(4).setOnClickListener((view) -> mContext.sendMoney(device, Integer.parseInt(((MaterialButton) view).getText().toString())));
+        ((MaterialTextView) holder.mmDeviceView.getChildAt(0)).setText(text == null ? mContext.getString(R.string.unknown_device) : text);
+        ((MaterialTextView) holder.mmDeviceView.getChildAt(1)).setText(account == null ? Constants.INITIAL_ACCOUNT.toString() : account.toString());
+        holder.mmDeviceView.setOnDragListener((view, dragEvent) -> {
+            switch (dragEvent.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    return true;
+
+                case DragEvent.ACTION_DROP:
+                    mContext.sendMoney(
+                            device,
+                            Integer.parseInt(
+                                    dragEvent.getClipData().getItemAt(0).getText().toString()
+                            )
+                    );
+                    return true;
+
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    holder.mmDeviceView.setBackgroundColor(Color.GRAY);
+                    return true;
+
+                case DragEvent.ACTION_DRAG_ENDED:
+                    ImageView imageView = (ImageView) dragEvent.getLocalState();
+                    if (imageView.getVisibility() == View.INVISIBLE) {
+                        imageView.setVisibility(View.VISIBLE);
+                    }
+                case DragEvent.ACTION_DRAG_EXITED:
+                    holder.mmDeviceView.setBackgroundColor(Color.WHITE);
+                    return true;
+            }
+            return false;
+        });
     }
 
     @Override

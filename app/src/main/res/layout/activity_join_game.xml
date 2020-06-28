@@ -39,6 +39,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/wait_information"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:text="@string/wait_for_host"
+                android:visibility="gone" />
+
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/refresh_layout"
                 android:layout_width="match_parent"
@@ -64,15 +72,6 @@
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/wait_information"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="8dp"
-                    android:text="@string/wait_for_host"
-                    android:visibility="gone" />
-
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
